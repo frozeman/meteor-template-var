@@ -55,13 +55,17 @@ TemplateVar = {
         }
 
         // make sure the template session object exists
-        if(template && !template._templateSession)
-            template._templateSession = {};
+        if(template && !template._templateVar)
+            template._templateVar = {};
 
         // create Reactive var, if not existing
-        if(template && !template._templateSession[key])
-            template._templateSession[key] = new ReactiveVar(value);
-
+        if(template && !template._templateVar[key])
+            template._templateVar[key] = new ReactiveVar(value);
+console.log({
+            key: key,
+            value: value,
+            template: template
+        });
 
         // build the keyname
         return {
@@ -85,7 +89,7 @@ TemplateVar = {
     get: function (template, propertyName) {
         var values = TemplateVar._getTemplateInstance(template, propertyName);
 
-        return values.template._templateSession[values.key].get();
+        return values.template._templateVar[values.key].get();
     },
 
 
@@ -101,7 +105,7 @@ TemplateVar = {
     set: function (template, propertyName, value) {
         var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
-        values.template._templateSession[values.key].set(values.value);
+        values.template._templateVar[values.key].set(values.value);
     }
 
 };
