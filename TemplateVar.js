@@ -61,11 +61,7 @@ TemplateVar = {
         // create Reactive var, if not existing
         if(template && !template._templateVar[key])
             template._templateVar[key] = new ReactiveVar(value);
-console.log({
-            key: key,
-            value: value,
-            template: template
-        });
+        
 
         // build the keyname
         return {
