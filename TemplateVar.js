@@ -37,18 +37,31 @@ TemplateVar = {
     _getTemplateInstance: function(givenTemplate, key, value){
         var template = null;
 
-        try {
-            template = Template.instance().view;
-            value = key;
-            key = givenTemplate;
+        // try if a template instance was given
+        if(_.isObject(givenTemplate) && (givenTemplate.hasOwnProperty('_templateInstance') || givenTemplate.hasOwnProperty('view'))) {
 
-        } catch(e) {
             // if it couldn't get the template, check if a template instance was given.
-            if(givenTemplate.hasOwnProperty('view'))
+            if(givenTemplate.hasOwnProperty('_templateInstance'))
+                template = givenTemplate;
+            else if(givenTemplate.hasOwnProperty('view'))
                 template = givenTemplate.view;
-            else
+
+        // otherwise try to get one yourself
+        } else {
+            try {
+                template = Template.instance().view;
+                value = key;
+                key = givenTemplate;
+
+            } catch(e) {
+
                 throw new Error('TemplateVar works only from withing template helpers, hooks or events');
+            }
         }
+
+
+
+
         // move on view up if its a #with, #if or #unless
         while(template.name.indexOf('Template.') === -1 && template.parentView) {
             template = template.parentView;
