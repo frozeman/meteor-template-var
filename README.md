@@ -13,7 +13,7 @@ Usage
 
 The `TemplateVar` provides reactive variables for template instance specific reactivity.
 
-To set and get properties inside **template helpers**, **callback** or **events** do as follow:
+To set and get properties inside template `helpers`, `callbacks` or `events` do as follow:
 
     // set a property
     TemplateVar.set('myProperty', 'myValue');
