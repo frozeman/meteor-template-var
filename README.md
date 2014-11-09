@@ -21,7 +21,8 @@ To set and get properties inside template `helpers`, `callbacks` or `events` do 
     // to get it inside a helper, or callback
     TemplateVar.get('myProperty');
 
-In case you want to use the TemplateVar inside a callback where you also have access to the template instance, you can pass the template instance as the first object, as seen below:
+In case you want to use the TemplateVar inside a callback where it can't get the template instance automatically
+you can pass the template instance as the first object, as seen below:
 
 	'click .do-something': function(e, template){
 
@@ -43,9 +44,9 @@ API Docs
 
 ### TemplateVar.get([template], propertyName)
 
-When get is called it creates a `Deps.Dependency.depend()` for that key in the store.
+When get is called it creates a `ReactiveVar` for that `propertyName` tied to the current template instance which it got using `Template.instance()`.
 
 
 ### TemplateVar.set([template], propertyName, value)
 
-When set is called every depending reactive function where `TemplateVar.get()` with the same key is called will rerun.
+When the value is changed it will call every depending reactive function where `TemplateVar.get()` with the same `propertyName` was called.
