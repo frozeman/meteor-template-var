@@ -54,8 +54,7 @@ TemplateVar = {
                 key = givenTemplate;
 
             } catch(e) {
-
-                throw new Error('TemplateVar works only from withing template helpers, hooks or events');
+                throw new Meteor.Error('TemplateVar works only from withing template helpers, callbacks or events. Additonally you can pass a template instance as the first parameter.');
             }
         }
 
