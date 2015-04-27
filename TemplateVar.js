@@ -54,7 +54,7 @@ TemplateVar = {
                 key = givenTemplate;
 
             } catch(e) {
-                throw new Meteor.Error('TemplateVar works only from withing template helpers, callbacks or events. Additonally you can pass a template instance as the first parameter.');
+                throw new Meteor.Error('TemplateVar: works only from withing template helpers, callbacks or events. Additonally you can pass a template instance as the first parameter.');
             }
         }
 
@@ -83,6 +83,23 @@ TemplateVar = {
         };
     },
 
+    /**
+    Gets the template instance form an DOM selector of an element within.
+
+    @method _getTemplateInstance
+    @param {String} selector            an element withing the template to get
+    @return {Object} The template instace
+    **/
+    _getTemplateInstanceBySelector: function(selector){
+        var element = $(selector)[0];
+
+        if(element) {
+            return Blaze.getView(element).templateInstance();
+        } else {
+            throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector+'"');
+        }
+    },
+
 
     // PUBLIC
 
@@ -95,7 +112,7 @@ TemplateVar = {
     @return {Mixed} The stored value.
     **/
     get: function (template, propertyName) {
-        var values = TemplateVar._getTemplateInstance(template, propertyName);
+        var values = this._getTemplateInstance(template, propertyName);
 
         return values.template._templateVar[values.key].get();
     },
@@ -111,9 +128,41 @@ TemplateVar = {
     @return undefined
     **/
     set: function (template, propertyName, value) {
-        var values = TemplateVar._getTemplateInstance(template, propertyName, value);
+        var values = this._getTemplateInstance(template, propertyName, value);
+
+        values.template._templateVar[values.key].set(values.value);
+    },
+
+
+    /**
+    When get is called we use the ReactiveVar.get from the template instance.
+
+    @method get
+    @param {Object} selector         a selector of an element within another template
+    @param {String} propertyName     The name of the property you want to get. Should consist of the `'myPropertyName'`
+    @return {Mixed} The stored value.
+    **/
+    getFrom: function (selector, propertyName) {
+        var template = this._getTemplateInstanceBySelector(selector);
+        var values = this._getTemplateInstance(template, propertyName);
+
+        return values.template._templateVar[values.key].get();
+    },
+
+
+    /**
+    When set is called every depending reactive function where `TemplateVar.get()` with the same key is called will rerun.
+
+    @method set
+    @param {Object} selector         a selector of an element within another template
+    @param {String} propertyName     The name of the property you want to get. Should consist of the `'templateName->myPropertyName'`
+    @param {String|Object} value     If the value is a string with `rerun`, then it will be rerun all dependent functions where get `TemplateInstance.get()` was called.
+    @return undefined
+    **/
+    setTo: function (selector, propertyName, value) {
+        var template = this._getTemplateInstanceBySelector(selector);
+        var values = this._getTemplateInstance(template, propertyName, value);
 
         values.template._templateVar[values.key].set(values.value);
     }
-
 };
