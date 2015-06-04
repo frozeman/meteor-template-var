@@ -48,6 +48,20 @@ If you want to set the TemplateVar of another template, than you're currently in
     // to get it from another template
     TemplateVar.getFrom('div.elementInTheOtherTemplate', 'myProperty');
 
+### From inside a template
+
+To get reactive template var values use:
+
+    {{TemplateVar.get "myVar"}}
+
+    {{TemplateVar.getFrom ".selector" "myVar"}}
+
+You can even set values:
+
+    {{TemplateVar.set "myVar" "myNewValue"}}
+
+    {{TemplateVar.setTo ".selector" "myVar" "myNewValue"}}
+
 
 API Docs
 ========

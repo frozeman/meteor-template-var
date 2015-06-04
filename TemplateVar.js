@@ -112,7 +112,7 @@ TemplateVar = {
     @return {Mixed} The stored value.
     **/
     get: function (template, propertyName) {
-        var values = this._getTemplateInstance(template, propertyName);
+        var values = TemplateVar._getTemplateInstance(template, propertyName);
 
         return values.template._templateVar[values.key].get();
     },
@@ -128,7 +128,7 @@ TemplateVar = {
     @return undefined
     **/
     set: function (template, propertyName, value) {
-        var values = this._getTemplateInstance(template, propertyName, value);
+        var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
         values.template._templateVar[values.key].set(values.value);
     },
@@ -143,8 +143,8 @@ TemplateVar = {
     @return {Mixed} The stored value.
     **/
     getFrom: function (selector, propertyName) {
-        var template = this._getTemplateInstanceBySelector(selector);
-        var values = this._getTemplateInstance(template, propertyName);
+        var template = TemplateVar._getTemplateInstanceBySelector(selector);
+        var values = TemplateVar._getTemplateInstance(template, propertyName);
 
         return values.template._templateVar[values.key].get();
     },
@@ -160,9 +160,24 @@ TemplateVar = {
     @return undefined
     **/
     setTo: function (selector, propertyName, value) {
-        var template = this._getTemplateInstanceBySelector(selector);
-        var values = this._getTemplateInstance(template, propertyName, value);
+        var template = TemplateVar._getTemplateInstanceBySelector(selector);
+        var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
         values.template._templateVar[values.key].set(values.value);
     }
 };
+
+// Register Global helpers
+/**
+Global TemplateVar helper
+
+@method (TemplateVar)
+**/
+Template.registerHelper('TemplateVar', function(name){
+    return {
+        get: TemplateVar.get.bind(this, Template.instance()),
+        set: TemplateVar.set.bind(this, Template.instance()),
+        getFrom: TemplateVar.getFrom.bind(this, Template.instance()),
+        setTo: TemplateVar.setTo.bind(this, Template.instance())
+    };
+});
