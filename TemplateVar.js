@@ -91,12 +91,10 @@ TemplateVar = {
     @return {Object} The template instace
     **/
     _getTemplateInstanceBySelector: function(selector){
-        var element = $(selector)[0];
-
-        if(element) {
-            return Blaze.getView(element).templateInstance();
+        if(selector) {
+            return Blaze.getView($(selector)[0]).templateInstance();
         } else {
-            throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector+'"');
+            throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector +'"');
         }
     },
 
@@ -177,7 +175,7 @@ Template.registerHelper('TemplateVar', function(name){
     return {
         get: TemplateVar.get.bind(this, Template.instance()),
         set: TemplateVar.set.bind(this, Template.instance()),
-        getFrom: TemplateVar.getFrom.bind(this, Template.instance()),
-        setTo: TemplateVar.setTo.bind(this, Template.instance())
+        getFrom: TemplateVar.getFrom.bind(this),
+        setTo: TemplateVar.setTo.bind(this)
     };
 });
