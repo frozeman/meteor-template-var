@@ -49,6 +49,11 @@ TemplateVar = {
         // otherwise try to get one yourself
         } else {
             try {
+
+                if(givenTemplate === 'waiting') {
+                    return;
+                }
+
                 template = Template.instance().view;
                 value = key;
                 key = givenTemplate;
@@ -91,8 +96,27 @@ TemplateVar = {
     @return {Object} The template instace
     **/
     _getTemplateInstanceBySelector: function(selector){
+
+
+        // set interval until elemtn appears and re-call funciton????
         if(selector) {
+
+            // view is not yet rendered, wait for it and recall this function
+            if(!Blaze.getView($(selector)[0]).isRendered) {
+                var wait = new ReactiveVar(false);
+                // make reactive
+                wait.get();
+                Blaze.getView($(selector)[0]).onViewReady(function(){
+                    wait.set(true);
+                    wait = null;
+                });
+
+                return 'waiting';
+            }
+
+
             return Blaze.getView($(selector)[0]).templateInstance();
+
         } else {
             throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector +'"');
         }
@@ -144,7 +168,8 @@ TemplateVar = {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
         var values = TemplateVar._getTemplateInstance(template, propertyName);
 
-        return values.template._templateVar[values.key].get();
+        if(values)
+            return values.template._templateVar[values.key].get();
     },
 
 
@@ -161,7 +186,8 @@ TemplateVar = {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
         var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
-        values.template._templateVar[values.key].set(values.value);
+        if(values)
+            values.template._templateVar[values.key].set(values.value);
     }
 };
 
