@@ -99,10 +99,19 @@ TemplateVar = {
 
 
         // set interval until elemtn appears and re-call funciton????
-        if(selector) {
+        if(selector && Blaze.getView($(selector)[0])) {
+            var view = Blaze.getView($(selector)[0]);
+
+            // move on view up if its a #with, #if or #unless
+            while(view.name.indexOf('Template.') === -1 && view.parentView) {
+                view = view.parentView;
+            }
+
+            if(!view || !view.templateInstance)
+                return;
 
             // view is not yet rendered, wait for it and recall this function
-            if(!Blaze.getView($(selector)[0]).isRendered) {
+            if(!view.isRendered) {
                 var wait = new ReactiveVar(false);
                 // make reactive
                 wait.get();
@@ -114,8 +123,7 @@ TemplateVar = {
                 return 'waiting';
             }
 
-
-            return Blaze.getView($(selector)[0]).templateInstance();
+            return view.templateInstance();
 
         } else {
             throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector +'"');
