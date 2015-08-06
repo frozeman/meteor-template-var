@@ -116,7 +116,8 @@ TemplateVar = {
                 // make reactive
                 wait.get();
                 Blaze.getView($(selector)[0]).onViewReady(function(){
-                    wait.set(true);
+                    if(wait)
+                        wait.set(true);
                     wait = null;
                 });
 
