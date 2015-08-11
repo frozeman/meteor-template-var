@@ -1,7 +1,7 @@
 Package.describe({
     name: "frozeman:template-var",
     summary: "Works as a wrapper for meteors ReactiveVar, but template instance specific.",
-    version: "1.1.7",
+    version: "1.2.0",
     git: "https://github.com/frozeman/meteor-template-var.git"
 });
 

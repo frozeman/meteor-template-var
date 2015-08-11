@@ -97,10 +97,11 @@ TemplateVar = {
     **/
     _getTemplateInstanceBySelector: function(selector){
 
+        var element = $(selector)[0];
 
         // set interval until elemtn appears and re-call funciton????
-        if(selector && Blaze.getView($(selector)[0])) {
-            var view = Blaze.getView($(selector)[0]);
+        if(selector && element && Blaze.getView(element)) {
+            var view = Blaze.getView(element);
 
             // move on view up if its a #with, #if or #unless
             while(view.name.indexOf('Template.') === -1 && view.parentView) {
@@ -127,7 +128,8 @@ TemplateVar = {
             return view.templateInstance();
 
         } else {
-            throw new Meteor.Error('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector +'"');
+            console.warn('TemplateVar: Couldn\'t find an element within a template matching the selector "'+ selector +'"');
+            return null;
         }
     },
 
@@ -175,6 +177,8 @@ TemplateVar = {
     **/
     getFrom: function (selector, propertyName) {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
+        if(!template)
+            return;
         var values = TemplateVar._getTemplateInstance(template, propertyName);
 
         if(values)
@@ -193,6 +197,8 @@ TemplateVar = {
     **/
     setTo: function (selector, propertyName, value) {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
+        if(!template)
+            return;
         var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
         if(values)
