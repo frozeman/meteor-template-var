@@ -97,11 +97,16 @@ TemplateVar = {
     **/
     _getTemplateInstanceBySelector: function(selector){
 
-        var element = $(selector)[0];
+        var view;
+
+        try {
+            view = Blaze.getView($(selector)[0]);
+        } catch(e) {
+
+        }
 
         // set interval until elemtn appears and re-call funciton????
-        if(selector && element && Blaze.getView(element)) {
-            var view = Blaze.getView(element);
+        if(selector && view) {
 
             // move on view up if its a #with, #if or #unless
             while(view.name.indexOf('Template.') === -1 && view.parentView) {
