@@ -1,7 +1,8 @@
-Works as a wrapper for meteors ReactiveVar, but template instance specific.
+Works as a wrapper for Meteors ReactiveVar, but template instance specific.
 
-Can only be used in template helpers, event handlers, callbacks (created, rendered, destroyed), or autorun.
+Can only be used in **template helpers**, **event handlers**, **callbacks (created, rendered, destroyed)**, or **autorun**.
 
+Read [this blog post](http://frozeman.de/blog/2015/10/meteor-blaze-templates-done-right/) for a full tutorial.
 
 Installation
 ============
@@ -13,7 +14,7 @@ Usage
 
 The `TemplateVar` provides reactive variables for template instance specific reactivity.
 
-To set and get properties inside template `onRendered`, `onCreated`, `onDestroyed`, `helpers` or `events` do as follow:
+To set and get properties inside template `onRendered`, `onCreated`, `onDestroyed`, `helpers`, `events` or `autorun` do as follow:
 
     // set a property
     TemplateVar.set('myProperty', 'myValue');
@@ -24,21 +25,36 @@ To set and get properties inside template `onRendered`, `onCreated`, `onDestroye
 In case you want to use the TemplateVar inside a callback where it can't get the template instance automatically
 you can pass the template instance as the first object, as seen below:
 
-	'click .do-something': function(e, template){
+    // In the created, rendered and destroyed functions
+    Template['myTemplate'].onCreated(function(){
+        var template = this;
 
-		Posts.insert({
-			...
-		}, function(error){
-			if(!error)
-				TemplateVar.set(template, 'myVariable', 'myValueToSet');
-			else
-				alert(error);
-		});
+        MyCustomAsyncFunction(function(error, result) {
+            TemplateVar.set(template, 'myResult',  result);
+        });
+    });
 
+    // In a template helper
+    Template['myTemplate'].helpers({
+        'myHelper': function(){
+            var template = Template.instance();
 
-	}
+            MyCustomAsyncFunction(function(error, result) {
+                TemplateVar.set(template, 'myResult',  result);
+            });
+        }
+    });
 
-### From other templates
+    // In an event
+    Template['myTemplate'].events({
+        'click button': function(e, template) {
+            MyCustomAsyncFunction(function(error, result) {
+                TemplateVar.set(template, 'myResult',  result);
+            });
+        }
+    });
+
+### From other templates or the console
 
 If you want to set the TemplateVar of another template, than you're currently in you can use the `TemplateVar.getFrom` and `TemplateVar.setTo` method:
 
