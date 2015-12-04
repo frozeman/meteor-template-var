@@ -64,6 +64,12 @@ If you want to set the TemplateVar of another template, than you're currently in
     // to get it from another template
     TemplateVar.getFrom('div.elementInTheOtherTemplate', 'myProperty');
 
+You can also pass an element directly:
+
+    'click input.special-input-component': function(e) {
+        TemplateVar.getFrom(e.currentTarget, 'specialValue');
+    }
+
 ### From inside a template
 
 To get reactive template var values use:
