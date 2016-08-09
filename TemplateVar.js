@@ -50,10 +50,6 @@ TemplateVar = {
         } else {
             try {
 
-                if(givenTemplate === 'waiting') {
-                    return;
-                }
-
                 template = Template.instance().view;
                 value = key;
                 key = givenTemplate;
@@ -119,15 +115,14 @@ TemplateVar = {
             // view is not yet rendered, wait for it and recall this function
             if(!view.isRendered) {
                 var wait = new ReactiveVar(false);
-                // make reactive
-                wait.get();
-                Blaze.getView($(selector)[0]).onViewReady(function(){
+
+                view.onViewReady(function(){
                     if(wait)
                         wait.set(true);
                     wait = null;
                 });
 
-                return 'waiting';
+                return wait;
             }
 
             return view.templateInstance();
@@ -184,10 +179,15 @@ TemplateVar = {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
         if(!template)
             return;
-        var values = TemplateVar._getTemplateInstance(template, propertyName);
 
-        if(values)
-            return values.template._templateVar[values.key].get();
+        if(template instanceof ReactiveVar) {
+            // make reactive
+            template.get();
+            return;
+        }
+
+        if(template.view._templateVar && template.view._templateVar[propertyName])
+            return template.view._templateVar[propertyName].get();
     },
 
 
@@ -204,10 +204,9 @@ TemplateVar = {
         var template = TemplateVar._getTemplateInstanceBySelector(selector);
         if(!template)
             return;
-        var values = TemplateVar._getTemplateInstance(template, propertyName, value);
 
-        if(values)
-            values.template._templateVar[values.key].set(values.value);
+        if(template.view._templateVar && template.view._templateVar[propertyName])
+            template.view._templateVar[propertyName].set(value);
     }
 };
 
