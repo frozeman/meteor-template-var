@@ -56,7 +56,7 @@ you can pass the template instance as the first object, as seen below:
 
 ### From other templates or the console
 
-If you want to set the TemplateVar of another template, than you're currently in you can use the `TemplateVar.getFrom` and `TemplateVar.setTo` method:
+If you want to set the TemplateVar of another template, than you can use `TemplateVar.getFrom` and `TemplateVar.setTo` method:
 
     // set a property in another template
     TemplateVar.setTo('div.elementInTheOtherTemplate', 'myProperty', 'myValue');
